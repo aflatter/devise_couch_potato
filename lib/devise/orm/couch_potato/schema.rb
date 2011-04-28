@@ -1,3 +1,5 @@
+require 'devise/schema'
+
 module Devise
   module Orm
     module CouchPotato
