@@ -1,3 +1,5 @@
+require 'devise'
+require 'couch_potato'
 require 'devise/orm/couch_potato/schema'
 
 module Devise
@@ -42,6 +44,12 @@ module Devise
       end
       
       module InstanceMethods
+        def [](key)
+          send key
+        end
+        def []=(key, value)
+          send "#{key}=", value
+        end
         def save(options = nil)
           ::CouchPotato.database.save(self)
         end
