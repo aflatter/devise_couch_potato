@@ -4,7 +4,8 @@ require 'shoulda'
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
-require 'devise_couch_potato'
+
+require 'devise/orm/couch_potato'
 
 class Test::Unit::TestCase
 end
