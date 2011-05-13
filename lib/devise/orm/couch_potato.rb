@@ -1,6 +1,7 @@
 require 'devise'
 require 'couch_potato'
 require 'devise/orm/couch_potato/schema'
+require 'orm_adapter/adapters/couch_potato'
 
 module Devise
   module Orm
@@ -13,7 +14,9 @@ module Devise
           if self.respond_to?("by_#{attrib}")
             validate "uniqueness_of_#{attrib}".to_sym
             define_method "uniqueness_of_#{attrib}" do
-              unless self.class.find(:conditions => { attrib => self.send(attrib) }).nil?
+              result = self.class.to_adapter.find_all(attrib => self.send(attrib))
+              expected = self.new? ? 0 : 1
+              if result.count > expected
                 self.errors.add(attrib, options[:message] || :taken)
               end
             end
@@ -51,7 +54,14 @@ module Devise
           send "#{key}=", value
         end
         def save(options = nil)
-          ::CouchPotato.database.save(self)
+          ::CouchPotato.database.save_document(self)
+        end
+        def save!
+          ::CouchPotato.database.save_document!(self)
+        end
+        def update_attributes(attrs)
+          self.attributes = attrs
+          self.save
         end
       end
   
